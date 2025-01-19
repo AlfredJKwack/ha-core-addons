@@ -26,4 +26,7 @@ exec python3 -m wyoming_satellite \
     --snd-volume-multiplier "$(bashio::config 'sound_volume_multiplier')" \
     --mic-auto-gain "$(bashio::config 'auto_gain')" \
     --mic-noise-suppression "$(bashio::config 'noise_suppression')" \
+    if bashio::config.true 'synthesize_using_webhook'; then
+        extra_args+=("--synthesize-command" "$(bashio::config 'synthesize_script')")
+    fi
     --no-zeroconf "${extra_args[@]}"
