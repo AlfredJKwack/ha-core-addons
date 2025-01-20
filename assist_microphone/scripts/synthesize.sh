@@ -1,4 +1,7 @@
-#!/usr/bin/env bash
+#!/command/with-contenv bashio
+# vim: ft=bash
+# shellcheck shell=bash
+# ==============================================================================
 
 ###
 # This script is used to send text to a Home Assistant webhook.
