@@ -62,6 +62,7 @@ When text-to-speech text is returned send it to a webhook. This feature does not
 
 <details>
 <summary>Example Automation</summary>
+
 ```yaml
 alias: Satellite response
 description: ""
