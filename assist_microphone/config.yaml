@@ -1,9 +1,9 @@
 ---
 version: 1.3.0
-slug: assist_microphone
-name: Assist Microphone
+slug: assist_microphone_ajk
+name: Assist Microphone - AlfredJWack
 description: Use Assist with local microphone
-url: https://github.com/home-assistant/addons/blob/master/assist_microphone
+url: https://github.com/AlfredJKwack/ha-core-addons/blob/master/assist_microphone
 hassio_api: true
 arch:
   - amd64
