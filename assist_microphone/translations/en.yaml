@@ -55,7 +55,8 @@ configuration:
   synthesize_script:
     name: Synthesize script
     description: >-
-      Path to the script that will doing the heavy lifting of sending the text to the webhook for further automation.
+      Path to the script that will doing the heavy lifting of sending the text
+      to the webhook for further automation.
   debug_logging:
     name: Debug logging
     description: >-
