@@ -16,6 +16,7 @@ set -e
 
 # Take text on stdin and JSON-encode it
 text="$(cat | jq -R -s '.')"
+bashio::log.info "Text to speech text: ${text}"
 
 # Set the default webhook name if not set in the configuration
 if bashio::var.has_value "$(bashio::config 'webhook_id')"; then
@@ -24,7 +25,6 @@ else
   bashio::log.warning  "webhook_id is not set. Will set to default"
   webhook_id="synthesize-assist-microphone-response"
 fi
-bashio::log.debug  "webhook_id is set to : $(bashio::config 'webhook_id')"
 
 # Check if SUPERVISOR_TOKEN is set
 if [ -z "$SUPERVISOR_TOKEN" ]; then
@@ -41,8 +41,7 @@ ha_ip=$(curl -s -X GET \
 if [ -z "$ha_ip" ]; then
   bashio::log.error "Failed to get Home Assistant IPv4 address."
   exit 1
-fi  
-bashio::log.debug  "Home Assistant IPv4 : $ha_ip"
+fi
 
 # Determine if the HA host has SSL enabled.
 ssl_enabled=$(curl -s -X GET \
@@ -52,8 +51,7 @@ ssl_enabled=$(curl -s -X GET \
 if [ -z "$ssl_enabled" ]; then
   bashio::log.error "Failed to determine if SSL is enabled."
   exit 1
-fi  
-bashio::log.debug "Home Assistant SSL enabled : $ssl_enabled"
+fi
 
 # Construct webhook URL based on SSL state, IP and webhook
 if [[ "$ssl_enabled" == "true" ]]; then
@@ -61,12 +59,12 @@ if [[ "$ssl_enabled" == "true" ]]; then
 else
   webhookurl="http://${ha_ip}:8123/api/webhook/${webhook_id}"
 fi
-bashio::log.debug  "webhookurl set to : $webhookurl"
+bashio::log.info  "webhookurl set to : $webhookurl"
 
 # Send the text to the Home Assistant Webhook.
-bashio::log.debug "Text to speech text: ${text} to $webhookurl"
+bashio::log.info "Sending text to webhook..."
 json_payload="{\"response\": ${text}}"
-bashio::log.debug "Payload: ${json_payload}"
+bashio::log.info "Payload: ${json_payload}"
 response=$(curl -s -o /dev/null -w "%{http_code}" -k -X POST \
   -H "Content-Type: application/json" \
   -d "$json_payload" \
@@ -75,4 +73,4 @@ if [ "$response" -ne 200 ]; then
   bashio::log.error "Failed to send text to webhook. HTTP status code: $response"
   exit 1
 fi
-bashio::log.debug "Successfully sent text to webhook."
+bashio::log.info "Successfully sent text to webhook."
