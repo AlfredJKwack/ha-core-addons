@@ -16,7 +16,6 @@ set -e
 
 # Take text on stdin and JSON-encode it
 text="$(cat | jq -R -s '.')"
-bashio::log.info "Text to speech text: ${text}"
 
 # Set the default webhook name if not set in the configuration
 if bashio::var.has_value "$(bashio::config 'webhook_id')"; then
@@ -59,12 +58,14 @@ if [[ "$ssl_enabled" == "true" ]]; then
 else
   webhookurl="http://${ha_ip}:8123/api/webhook/${webhook_id}"
 fi
-bashio::log.info  "webhookurl set to : $webhookurl"
+bashio::log.info  "Webhookurl set to : $webhookurl"
 
 # Send the text to the Home Assistant Webhook.
-bashio::log.info "Sending text to webhook..."
 json_payload="{\"response\": ${text}}"
-bashio::log.info "Payload: ${json_payload}"
+if bashio::config.true 'debug_logging'; then
+    #only send when in debug to avoid leaking potentially sensitive things.
+    bashio::log.info "Payload for webhook: ${json_payload}"
+fi
 response=$(curl -s -o /dev/null -w "%{http_code}" -k -X POST \
   -H "Content-Type: application/json" \
   -d "$json_payload" \
